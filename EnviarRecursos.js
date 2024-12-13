@@ -122,24 +122,29 @@ else {
 //}
 function calculateResAmounts(wood, stone, iron, warehouse, merchants) {
     var merchantCarry = merchants * 1000;
-    //available to use resources in village and substracting what we wanna leave behind
+    // Definir a quantidade mínima de argila a ser mantida (38% ou valor fixo)
+    var minClay = 150000; 
+
+    // disponível para uso dos recursos na aldeia, subtraindo o que queremos deixar para trás
     leaveBehindRes = Math.floor(warehouse / 100 * resLimit);
     var localWood = wood - leaveBehindRes;
     var localStone = stone - leaveBehindRes;
     var localIron = iron - leaveBehindRes;
+
+    // Subtrair a quantidade mínima de argila a ser mantida
+    var localClay = Math.max(0, stone - minClay); // garantir que não seja negativa
+
     localWood = Math.max(0, localWood);
     localStone = Math.max(0, localStone);
     localIron = Math.max(0, localIron);
 
-
-
-    //recalculate how much can be sent according to how much is available
-    //how much the merchant can take maximum
+    // recalcular quanto pode ser enviado de acordo com o que está disponível
+    // quanto os mercadores podem carregar no máximo
     merchantWood = (merchantCarry * woodPercentage);
     merchantStone = (merchantCarry * stonePercentage);
     merchantIron = (merchantCarry * ironPercentage);
 
-    //check each type if we have enough available
+    // verificar se temos o suficiente disponível para cada tipo
     var perc = 1;
     if (merchantWood > localWood) {
         perc = localWood / merchantWood;
@@ -161,8 +166,8 @@ function calculateResAmounts(wood, stone, iron, warehouse, merchants) {
     }
     thisVillaData = { "wood": Math.floor(merchantWood), "stone": Math.floor(merchantStone), "iron": Math.floor(merchantIron) }
     return thisVillaData;
-
 }
+
 
 function sendResource(sourceID, targetID, woodAmount, stoneAmount, ironAmount) {
     var e = { "target_id": targetID, "wood": woodAmount, "stone": stoneAmount, "iron": ironAmount };
